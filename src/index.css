@@ -14,3 +14,176 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: white;
+  color: rgb(47, 46, 46);
+}
+
+header {
+  padding: 10px;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid rgb(169, 169, 169);
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+}
+
+.icon {
+  margin: 0;
+  display: flex;
+  padding: 20px;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  font-size:xx-large;
+  cursor: pointer;
+  box-sizing: border-box;
+  height: 100%;
+}
+
+#caption {
+  color: gray;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.side {
+  width: 25%;
+  border-right: 1px solid rgb(169, 169, 169);
+  height: 100vh;
+}
+
+.side-head {
+  padding-left: 20px;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgb(169, 169, 169);
+}
+
+.side-body {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  color: gray;
+  font-size: large;
+}
+
+#no-note {
+  padding-top: 10px;
+}
+
+.main {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#main-initial {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: gray;
+  font-size: xx-large;
+}
+
+#add {
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+#add:hover, .icon:hover {
+  border: 1px solid grey;
+  background-color: rgb(78, 65, 78);
+  color: white;
+}
+
+.current-note-tag {
+  margin: 0;
+  padding: 10px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  min-height: 60px;
+  border-bottom: 1px solid rgb(169, 169, 169);
+  background-color: rgb(78, 65, 78);
+  color: white;
+  font-weight: bold;
+}
+
+.main-heading {
+  margin: 0;
+  padding-left: 10px;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  flex-direction: column;
+  border-bottom: 1px solid rgb(169, 169, 169);
+}
+
+#note-title {
+  color: black;
+  font-size: x-large;
+  border: none;
+  outline: none;
+}
+
+#note-content {
+  padding: 10px;
+}
+
+#date {
+  left: 0;
+  border: none;
+  width:fit-content;
+}
+
+.sd-buttons {
+  position: absolute;
+  right: 0;
+}
+
+#save, #delete {
+  height: 100%;
+  width: 100%;
+  display: inline;
+  text-align: center;
+  padding: 27px 20px;
+  cursor: pointer;
+}
+
+#save:hover, #delete:hover {
+  border: 1px solid grey;
+  background-color: rgb(78, 65, 78);
+  color: white;
+}
+
+.edit-bar {
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+
+.edit-bar .ql-container {
+  border-bottom: none !important;
+}
+
+.hidden {
+  display: none;
+}
