@@ -6,13 +6,18 @@ function Layout() {
 
     const addClicked = () => {
         setSideNotes([{
-            title: `Untitled ${sideNotes.length}`,
-            date: "--",
-            note: "Body"
+            title: `Untitled`,
+            date: ` `,
+            note: "..."
         },
         ...sideNotes,
     ]);
     };
+
+    const hideSide = ()=> {
+        const side = document.getElementById("side");
+        side.classList.toggle("hidden");
+    }
 
     return (
     <>
@@ -29,7 +34,21 @@ function Layout() {
               <h2 id="add" onClick={addClicked}>+</h2>
             </div>
             <div class= "side-body">
-              <p id = "no-note">No Note Yet</p>
+              {sideNotes.length === 0 ? (
+                <p id = "no-note">No Note Yet</p>
+              ) : (
+                <ul class = "note-tags">
+                  {sideNotes.map((element, idx) => (
+                    <li class = "note-tag">
+                      <NavLink to = {`/notes/${idx}`}>
+                        <h3>{element.title}</h3>
+                        <small>{element.date}</small>
+                        <p dangerouslySetInnerHTML={{__html: element.note}} />
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
           <div class= "main">
