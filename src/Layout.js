@@ -1,17 +1,22 @@
 import React, {useState} from "react";
 import {NavLink, Outlet} from "react-router-dom";
+import { v4 as uuidv4 } from 'uuid';
 
-function Layout() {
-    const [sideNotes, setSideNotes] = useState([]);
+function Layout({sideNotes, setSideNotes, noteNum, setNoteNum }) {
+    const [showOutlet, setShowOutlet] = useState(false);
 
     const addClicked = () => {
-        setSideNotes([{
-            title: `Untitled`,
-            date: ` `,
-            note: "..."
-        },
-        ...sideNotes,
-    ]);
+      const newNoteNum = noteNum + 1;
+      const newNote = {
+        id: uuidv4(),
+        title: 'Untitled',
+        date: '',
+        note: '...',
+      };
+      setSideNotes([newNote, ...sideNotes]);
+      setNoteNum(newNoteNum);
+      setShowOutlet(true);
+      localStorage.setItem(newNoteNum, JSON.stringify(newNote));
     };
 
     const hideSide = ()=> {
@@ -52,7 +57,12 @@ function Layout() {
             </div>
           </div>
           <div class= "main">
-            <p id = "main-initial">Select a note, or create a new one.</p>
+            {showOutlet ? (
+              <Outlet>
+              </Outlet>
+            ) : (
+              <p id="main-initial">Select a note, or create a new one.</p>
+            )}
           </div>
         </div>
       </body>
