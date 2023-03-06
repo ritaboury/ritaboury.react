@@ -1,9 +1,13 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
+import { useNavigate } from "react-router-dom";
 import {NavLink, Outlet} from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 
+
 function Layout({sideNotes, setSideNotes, noteNum, setNoteNum }) {
     const [showOutlet, setShowOutlet] = useState(false);
+
+    const navigate = useNavigate();
 
     const addClicked = () => {
       const newNoteNum = noteNum + 1;
@@ -11,18 +15,34 @@ function Layout({sideNotes, setSideNotes, noteNum, setNoteNum }) {
         id: uuidv4(),
         title: 'Untitled',
         date: '',
-        note: '...',
+        note: '',
       };
       setSideNotes([newNote, ...sideNotes]);
       setNoteNum(newNoteNum);
       setShowOutlet(true);
       localStorage.setItem(newNoteNum, JSON.stringify(newNote));
+      navigate(`/notes/${newNoteNum}/edit`)
     };
 
     const hideSide = ()=> {
         const side = document.getElementById("side");
         side.classList.toggle("hidden");
     }
+
+    const MAX_CHARS = 30;
+
+    useEffect(() => {
+      window.addEventListener("beforeunload", clearLocalStorage);
+    
+      return () => {
+        window.removeEventListener("beforeunload", clearLocalStorage);
+      };
+    }, []);
+    
+    const clearLocalStorage = () => {
+      window.localStorage.clear();
+    };
+
 
     return (
     <>
@@ -43,12 +63,12 @@ function Layout({sideNotes, setSideNotes, noteNum, setNoteNum }) {
                 <p id = "no-note">No Note Yet</p>
               ) : (
                 <ul class = "note-tags">
-                  {sideNotes.map((element, idx) => (
+                  {sideNotes.map((element, noteNum) => (
                     <li class = "note-tag">
-                      <NavLink to = {`/notes/${idx}`}>
+                      <NavLink to = {`/notes/${noteNum+1}`}>
                         <h3>{element.title}</h3>
                         <small>{element.date}</small>
-                        <p dangerouslySetInnerHTML={{__html: element.note}} />
+                        <p dangerouslySetInnerHTML={{__html: `${element.note.slice(0, MAX_CHARS)}...`}} />
                       </NavLink>
                     </li>
                   ))}

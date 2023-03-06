@@ -14,7 +14,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route element = {<Layout sideNotes={sideNotes} setSideNotes={setSideNotes} noteNum={noteNum} setNoteNum={setNoteNum}/>}>
-          <Route path="/notes" element={<NoteEdit sideNotes={sideNotes} setSideNotes={setSideNotes} noteNum={noteNum} setNoteNum={setNoteNum} />}></Route>
+          <Route path={`/notes`} element={<NoteEdit sideNotes={sideNotes} setSideNotes={setSideNotes} noteNum={noteNum} setNoteNum={setNoteNum} />}></Route>
           <Route path={`/notes/${noteNum}`} element={<NoteSave sideNotes={sideNotes} setSideNotes={setSideNotes} noteNum={noteNum} setNoteNum={setNoteNum}/>}></Route>
           <Route path={`/notes/${noteNum}/edit`} element={<NoteEdit sideNotes={sideNotes} setSideNotes={setSideNotes} noteNum={noteNum} setNoteNum={setNoteNum}/>}></Route>
         </Route>

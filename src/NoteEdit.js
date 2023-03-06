@@ -10,13 +10,28 @@ const currentDate = () => {
         .substring(0, 19);
 };
 
+const options = {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  hour: "numeric",
+  minute: "numeric",
+};
+
+const formatDate = (when) => {
+  const formatted = new Date(when).toLocaleString("en-US", options);
+  if (formatted === "Invalid Date") {
+      return "";
+  }
+  return formatted;
+};
+
 function NoteEdit({sideNotes, setSideNotes, noteNum, setNoteNum }) {
     const currentNote = JSON.parse(localStorage.getItem(noteNum));
-    const currentId = currentNote.id;
     
-    const [title, setTitle] = useState('');
-    const [date, setDate] = useState('');
-    const [note, setNote] = useState('');
+    const [title, setTitle] = useState(currentNote.title);
+    const [date, setDate] = useState(currentNote.date);
+    const [note, setNote] = useState(currentNote.note);
 
 
     const [isEditable, setIsEditable] = useState(true);
@@ -24,7 +39,7 @@ function NoteEdit({sideNotes, setSideNotes, noteNum, setNoteNum }) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        setTitle(currentNote.title || '');
+        setTitle(currentNote.title || 'Untitled');
         setDate(currentNote.date || currentDate());
         setNote(currentNote.note || '');
     }, [currentNote]);
@@ -34,16 +49,25 @@ function NoteEdit({sideNotes, setSideNotes, noteNum, setNoteNum }) {
         const updatedNote = {
             ...currentNote,
             title,
-            date,
+            date: formatDate(date),
             note
-          };
-          localStorage.setItem(noteNum, JSON.stringify(updatedNote));
-          setSideNotes(sideNotes => {
+        };
+        localStorage.setItem(noteNum, JSON.stringify(updatedNote));
+        setSideNotes(sideNotes => {
             const updatedSideNotes = [...sideNotes];
-            updatedSideNotes[noteNum] = updatedNote;
+            const noteIndex = updatedSideNotes.findIndex(
+              (note) => note.id === currentNote.id
+            );
+            if (noteIndex !== -1) {
+              updatedSideNotes[noteIndex] = updatedNote;
+            }
             return updatedSideNotes;
-          });
-        navigate(`/notes/${noteNum}`);
+        });
+        if (noteNum > 0) {
+          navigate(`/notes/${noteNum}`);
+        } else {
+          navigate(`/notes`);
+        }
     };
 
     const handleDelete = () => {
@@ -56,13 +80,14 @@ function NoteEdit({sideNotes, setSideNotes, noteNum, setNoteNum }) {
               return updatedSideNotes;
             });
             setNoteNum(noteNum-1);
-            if (noteNum > 0) {
+            if (noteNum > 1) {
               navigate(`/notes/${noteNum-1}`);
             } else {
               navigate('/notes');
             }
         }
     };
+
 
     return (
       <>
@@ -74,18 +99,26 @@ function NoteEdit({sideNotes, setSideNotes, noteNum, setNoteNum }) {
                     readOnly={!isEditable}
                     onChange={(e) => {
                         setTitle(e.target.value);
-                        localStorage.setItem(currentNote.title, JSON.stringify(e.target.value));
+                        const updatedNote = {
+                          ...currentNote,
+                          title: e.target.value,
+                      };
+                        localStorage.setItem(noteNum, JSON.stringify(updatedNote));
                     }}
                 />
                 <input 
                     id = "date" 
                     type="datetime-local" 
-                    defaultValue={date ? date : currentDate()}
+                    value={date ? date : currentDate()}
                     readOnly={!isEditable}
                     onChange={(e) => {
                         setDate(e.target.value);
                         const dateValue = e.target.value;
-                        localStorage.setItem(currentNote.date, dateValue !== currentDate() ? dateValue : null);
+                        const updatedNote = {
+                          ...currentNote,
+                          date: dateValue !== currentDate() ? dateValue : currentDate(),
+                        };
+                        localStorage.setItem(noteNum, JSON.stringify(updatedNote));
                     }}
                     />
                 <span class = "sd-buttons"><p id = "save" onClick={handleSave}>Save</p> <p id = "delete" onClick={handleDelete}>Delete</p></span>
@@ -95,7 +128,11 @@ function NoteEdit({sideNotes, setSideNotes, noteNum, setNoteNum }) {
                     readOnly={!isEditable}
                     onChange={(content) => {
                         setNote(content);
-                        localStorage.setItem(currentNote.note, JSON.stringify(content));
+                        const updatedNote = {
+                          ...currentNote,
+                          note: content,
+                        };
+                        localStorage.setItem(noteNum, JSON.stringify(updatedNote));
                     }}
                     />
             </div>
