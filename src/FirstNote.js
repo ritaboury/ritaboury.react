@@ -55,30 +55,30 @@ function FirstNote() {
     return (
       <>
       <header>
-        <span class = "icon" onClick={hideSide}><p id="menu-icon">&#9776;</p> </span>
+        <span className = "icon" onClick={hideSide}><p id="menu-icon">&#9776;</p> </span>
         <h1>Lotion</h1>
         <h5 id="caption">Like Notion, but worse.</h5>
       </header>
       <body>
-        <div class="flex-container">
-          <div class = "side" id = "side">
-            <div class = "side-head">
+        <div className="flex-container">
+          <div className = "side" id = "side">
+            <div className = "side-head">
               <h2>Notes</h2>
               <h2 id="add" onClick={addClicked}>+</h2>
             </div>
-            <div class= "side-body">
-                <div class = "current-note-tag">
+            <div className= "side-body">
+                <div className = "current-note-tag">
                     <p>Untitled<br /><br />...</p>
                 </div>
             </div>
           </div>
-          <div class= "main">
-            <div class = "main-heading">
+          <div className= "main">
+            <div className = "main-heading">
                 <p id = "note-title" defaultValue={"Untitled"} readOnly ><b>{title}</b></p>
                 <p id = "date" defaultValue={""} readOnly>{formatDate(date)}</p>
-                <span class = "sd-buttons"><p id = "save" onClick={editClicked}>Edit</p> <p id = "delete" onClick={handleDelete}>Delete</p></span>
+                <span className = "sd-buttons"><p id = "save" onClick={editClicked}>Edit</p> <p id = "delete" onClick={handleDelete}>Delete</p></span>
             </div>
-            <div class = "edit-bar">
+            <div className = "edit-bar">
                 <p id = "note-content" defaultValue={""} readOnly>{removeTags(note)}</p>
             </div>
           </div>

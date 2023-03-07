@@ -5,51 +5,37 @@ import React, { useState, useEffect } from "react";
 
 const currentDate = () => {
     const date = new Date();
-    return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
-        .toJSON()
-        .substring(0, 19);
-};
-
-const options = {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-  hour: "numeric",
-  minute: "numeric",
-};
-
-const formatDate = (when) => {
-  const formatted = new Date(when).toLocaleString("en-US", options);
-  if (formatted === "Invalid Date") {
-      return "";
-  }
-  return formatted;
+    const res = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+    .toJSON()
+    .substring(0, 19);
+    return res;
 };
 
 function NoteEdit({sideNotes, setSideNotes, noteNum, setNoteNum }) {
     const currentNote = JSON.parse(localStorage.getItem(noteNum));
     
-    const [title, setTitle] = useState(currentNote.title);
-    const [date, setDate] = useState(currentNote.date);
-    const [note, setNote] = useState(currentNote.note);
+    const [title, setTitle] = useState("");
+    const [date, setDate] = useState(new Date());
+    const [note, setNote] = useState("");
 
 
     const [isEditable, setIsEditable] = useState(true);
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        setTitle(currentNote.title || 'Untitled');
-        setDate(currentNote.date || currentDate());
-        setNote(currentNote.note || '');
-    }, [currentNote]);
+    // useEffect(() => {
+    //     const currentNote = JSON.parse(localStorage.getItem(noteNum));
+    //     setTitle(currentNote? currentNote.title : 'Untitled');
+    //     setDate(currentNote.date !== ""? new Date(currentNote.date) : currentDate());
+    //     setNote(currentNote? currentNote.note: '');
+    // }, [noteNum]);
 
     const handleSave = () => {
         setIsEditable(false);
         const updatedNote = {
             ...currentNote,
             title,
-            date: formatDate(date),
+            date: date,
             note
         };
         localStorage.setItem(noteNum, JSON.stringify(updatedNote));
@@ -75,27 +61,38 @@ function NoteEdit({sideNotes, setSideNotes, noteNum, setNoteNum }) {
         if (answer) {
             localStorage.removeItem(noteNum);
             setSideNotes(sideNotes => {
-              const updatedSideNotes = [...sideNotes];
-              updatedSideNotes.splice(noteNum, 1);
+              const updatedSideNotes = sideNotes.filter((note) => note.id !== currentNote.id);
               return updatedSideNotes;
             });
             setNoteNum(noteNum-1);
             if (noteNum > 1) {
               navigate(`/notes/${noteNum-1}`);
             } else {
-              navigate('/notes');
+              navigate(`/notes`);
             }
         }
     };
 
+    const localDate = new Date(date.toLocaleString("en-US", {timeZone: "America/Denver"}).slice(0, -3));
+    const year = localDate.getFullYear();
+    const month = (localDate.getMonth() + 1).toString().padStart(2, '0');
+    const day = localDate.getDate().toString().padStart(2, '0');
+    let hours = 0;
+    if (localDate.getHours < 12) {
+      hours = (localDate.getHours()+12).toString().padStart(2, '0');
+    } else {
+      hours = (localDate.getHours()).toString().padStart(2, '0');
+    }
+    const minutes = localDate.getMinutes().toString().padStart(2, '0');
+    const isoDate = `${year}-${month}-${day}T${hours}:${minutes}`;
 
     return (
       <>
-        <div class = "main">
-            <div class = "main-heading">
+        <div className = "main">
+            <div className = "main-heading">
                 <input 
                     id = "note-title"
-                    defaultValue = {title || "Untitled"}
+                    value = {title}
                     readOnly={!isEditable}
                     onChange={(e) => {
                         setTitle(e.target.value);
@@ -109,11 +106,12 @@ function NoteEdit({sideNotes, setSideNotes, noteNum, setNoteNum }) {
                 <input 
                     id = "date" 
                     type="datetime-local" 
-                    value={date ? date : currentDate()}
+                    value={date ? isoDate : currentDate()}
                     readOnly={!isEditable}
                     onChange={(e) => {
-                        setDate(e.target.value);
-                        const dateValue = e.target.value;
+                      setDate(e.target.value);
+                      const dateValue = new Date(e.target.value);
+                      setDate(dateValue);
                         const updatedNote = {
                           ...currentNote,
                           date: dateValue !== currentDate() ? dateValue : currentDate(),
@@ -121,10 +119,11 @@ function NoteEdit({sideNotes, setSideNotes, noteNum, setNoteNum }) {
                         localStorage.setItem(noteNum, JSON.stringify(updatedNote));
                     }}
                     />
-                <span class = "sd-buttons"><p id = "save" onClick={handleSave}>Save</p> <p id = "delete" onClick={handleDelete}>Delete</p></span>
+                <span className = "sd-buttons"><p id = "save" onClick={()=>handleSave()}>Save</p> <p id = "delete" onClick={()=>handleDelete()}>Delete</p></span>
             </div>
-            <div class = "edit-bar">
+            <div className = "edit-bar">
                 <ReactQuill theme="snow" placeholder="Your Note Here"
+                    value = {note? note: ""}
                     readOnly={!isEditable}
                     onChange={(content) => {
                         setNote(content);

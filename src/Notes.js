@@ -13,22 +13,22 @@ function Notes() {
     return (
       <>
       <header>
-        <span class = "icon" onClick={hideSide}><p id="menu-icon">&#9776;</p> </span>
+        <span className = "icon" onClick={hideSide}><p id="menu-icon">&#9776;</p> </span>
         <h1>Lotion</h1>
         <h5 id="caption">Like Notion, but worse.</h5>
       </header>
       <body>
-        <div class="flex-container">
-          <div class = "side" id = "side">
-            <div class = "side-head">
+        <div className="flex-container">
+          <div className = "side" id = "side">
+            <div className = "side-head">
               <h2>Notes</h2>
               <h2 id="add" onClick={addClicked}>+</h2>
             </div>
-            <div class= "side-body">
+            <div className= "side-body">
               <p id = "no-note">No Note Yet</p>
             </div>
           </div>
-          <div class= "main">
+          <div className= "main">
             <p id = "main-initial">Select a note, or create a new one.</p>
           </div>
         </div>

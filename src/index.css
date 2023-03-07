@@ -15,7 +15,7 @@ a {
   text-decoration: none;
 }
 
-body {
+.body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
   background-color: white;
@@ -135,6 +135,7 @@ header {
   display: flex;
   flex-direction: column;
   color: black;
+  overflow: hidden;
 }
 
 .note-tag {
