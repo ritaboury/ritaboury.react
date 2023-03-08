@@ -1,14 +1,14 @@
-import { useNavigate, useParams} from "react-router-dom";
-import React, {useState} from "react";
+import { useNavigate, useOutletContext, useParams} from "react-router-dom";
+import React, {useEffect, useState} from "react";
 
 function NoteSave() {
 
   const {noteNum} = useParams(); 
+  const [notes, updateNote, deleteNote] = useOutletContext();
 
-    const currentNote = JSON.parse(localStorage.getItem(noteNum));
-    const [title, setTitle] = useState(currentNote.title);
-    const [date, setDate] = useState(currentNote.date);
-    const [note, setNote] = useState(currentNote.note);
+    const [title, setTitle] = useState("");
+    const [date, setDate] = useState("");
+    const [note, setNote] = useState("");
     const currentDate = () => {
         const date = new Date();
         return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
@@ -18,6 +18,20 @@ function NoteSave() {
 
     const navigate = useNavigate();
     
+
+    useEffect(()=> {
+      // runs once the component is loaded
+      // check and see if notes[noteNum] exists
+      // if it does, update title, date, and note to whatever you get from notes[noteNum]
+      // if noteNum is 1, you need to check the 0 position. 
+      if (notes[noteNum-1]) {
+        console.log(noteNum);
+        setTitle(notes[noteNum-1].title);
+        setDate(notes[noteNum-1].date);
+        setNote(notes[noteNum-1].note);
+      }
+    }, [noteNum, notes])
+
     const editClicked = ()=> {
         navigate(`/notes/${noteNum}/edit`);
     }
@@ -25,16 +39,9 @@ function NoteSave() {
     const handleDelete = () => {
         const answer = window.confirm("Are you sure?");
         if (answer) {
-            // setSideNotes(sideNotes => {
-            //   const updatedSideNotes = sideNotes.filter((note) => note.id !== currentNote.id);
-            //   return updatedSideNotes;
-            // });
-            // setNoteNum(noteNum-1);
-            // if (noteNum > 1) {
-            //   navigate(`/notes/${noteNum-2}`);
-            // } else {
-            //   navigate(`/notes`);
-            // }
+          // call a function you get from Layout.js to delete
+          deleteNote(noteNum-1);
+          navigate(`/notes/${noteNum-1}`);
         }
     };
 

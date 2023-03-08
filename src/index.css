@@ -114,19 +114,6 @@ header {
   color: white;
 }
 
-.current-note-tag {
-  margin: 0;
-  padding: 10px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  min-height: 60px;
-  border-bottom: 1px solid rgb(169, 169, 169);
-  background-color: rgb(78, 65, 78);
-  color: white;
-  font-weight: bold;
-}
-
 .note-tags {
   list-style-type: none;
   margin: 0;
@@ -142,6 +129,19 @@ header {
   padding: 10px;
   min-height: 60px;
   border-bottom: 1px solid rgb(169, 169, 169);
+}
+
+.active-note {
+  margin: 0;
+  padding: 10px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  min-height: 60px;
+  border-bottom: 1px solid rgb(169, 169, 169);
+  background-color: rgb(78, 65, 78) !important;
+  color: white;
+  font-weight: bold;
 }
 
 .main-heading {
@@ -186,7 +186,7 @@ header {
   cursor: pointer;
 }
 
-#save:hover, #delete:hover {
+#save:hover, #delete:hover, li:hover {
   border: 1px solid grey;
   background-color: rgb(78, 65, 78);
   color: white;

@@ -1,7 +1,7 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const currentDate = () => {
     const date = new Date();
@@ -11,66 +11,44 @@ const currentDate = () => {
     return res;
 };
 
-function NoteEdit({sideNotes, setSideNotes, noteNum, setNoteNum }) {
-    const currentNote = JSON.parse(localStorage.getItem(noteNum));
+function NoteEdit() {
     
+    const { noteNum } = useParams();
+    const [notes, updateNote, deleteNote] = useOutletContext();
+
+    const [id, setId] = useState("");
     const [title, setTitle] = useState("");
     const [date, setDate] = useState(new Date());
     const [note, setNote] = useState("");
 
-
-    const [isEditable, setIsEditable] = useState(true);
+    useEffect(() => {
+      if (notes[noteNum - 1]) {
+        const { id, title, date, note } = notes[noteNum - 1];
+        setId(id);
+        setTitle(title);
+        setDate(date);
+        setNote(note);
+      }
+    }, [noteNum, notes]);
 
     const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     const currentNote = JSON.parse(localStorage.getItem(noteNum));
-    //     setTitle(currentNote? currentNote.title : 'Untitled');
-    //     setDate(currentNote.date !== ""? new Date(currentNote.date) : currentDate());
-    //     setNote(currentNote? currentNote.note: '');
-    // }, [noteNum]);
-
     const handleSave = () => {
-        setIsEditable(false);
+      
         const updatedNote = {
-            ...currentNote,
+            id,
             title,
-            date: date,
+            date: date? date : currentDate(),
             note
         };
-        localStorage.setItem(noteNum, JSON.stringify(updatedNote));
-        setSideNotes(sideNotes => {
-            const updatedSideNotes = [...sideNotes];
-            const noteIndex = updatedSideNotes.findIndex(
-              (note) => note.id === currentNote.id
-            );
-            if (noteIndex !== -1) {
-              updatedSideNotes[noteIndex] = updatedNote;
-            }
-            return updatedSideNotes;
-        });
-        if (noteNum > 0) {
-          navigate(`/notes/${noteNum}`);
-        } else {
-          navigate(`/notes`);
-        }
+        updateNote && updateNote(updatedNote, noteNum - 1);
+        navigate(`/notes/${noteNum}`);
+        
     };
 
     const handleDelete = () => {
-        const answer = window.confirm("Are you sure?");
-        if (answer) {
-            localStorage.removeItem(noteNum);
-            setSideNotes(sideNotes => {
-              const updatedSideNotes = sideNotes.filter((note) => note.id !== currentNote.id);
-              return updatedSideNotes;
-            });
-            setNoteNum(noteNum-1);
-            if (noteNum > 1) {
-              navigate(`/notes/${noteNum-1}`);
-            } else {
-              navigate(`/notes`);
-            }
-        }
+      deleteNote(noteNum - 1);
+      navigate(`/notes/${noteNum-1}`);
     };
 
     const localDate = new Date(date.toLocaleString("en-US", {timeZone: "America/Denver"}).slice(0, -3));
@@ -78,7 +56,7 @@ function NoteEdit({sideNotes, setSideNotes, noteNum, setNoteNum }) {
     const month = (localDate.getMonth() + 1).toString().padStart(2, '0');
     const day = localDate.getDate().toString().padStart(2, '0');
     let hours = 0;
-    if (localDate.getHours < 12) {
+    if (localDate.getHours() < 12) {
       hours = (localDate.getHours()+12).toString().padStart(2, '0');
     } else {
       hours = (localDate.getHours()).toString().padStart(2, '0');
@@ -92,31 +70,20 @@ function NoteEdit({sideNotes, setSideNotes, noteNum, setNoteNum }) {
             <div className = "main-heading">
                 <input 
                     id = "note-title"
-                    value = {title}
-                    readOnly={!isEditable}
+                    value = {title || "Untitled"}
                     onChange={(e) => {
-                        setTitle(e.target.value);
-                        const updatedNote = {
-                          ...currentNote,
-                          title: e.target.value,
-                      };
-                        localStorage.setItem(noteNum, JSON.stringify(updatedNote));
+                      setTitle(e.target.value);
                     }}
+                  
                 />
                 <input 
                     id = "date" 
                     type="datetime-local" 
                     value={date ? isoDate : currentDate()}
-                    readOnly={!isEditable}
                     onChange={(e) => {
-                      setDate(e.target.value);
                       const dateValue = new Date(e.target.value);
                       setDate(dateValue);
-                        const updatedNote = {
-                          ...currentNote,
-                          date: dateValue !== currentDate() ? dateValue : currentDate(),
-                        };
-                        localStorage.setItem(noteNum, JSON.stringify(updatedNote));
+                      
                     }}
                     />
                 <span className = "sd-buttons"><p id = "save" onClick={()=>handleSave()}>Save</p> <p id = "delete" onClick={()=>handleDelete()}>Delete</p></span>
@@ -124,21 +91,16 @@ function NoteEdit({sideNotes, setSideNotes, noteNum, setNoteNum }) {
             <div className = "edit-bar">
                 <ReactQuill theme="snow" placeholder="Your Note Here"
                     value = {note? note: ""}
-                    readOnly={!isEditable}
                     onChange={(content) => {
                         setNote(content);
-                        const updatedNote = {
-                          ...currentNote,
-                          note: content,
-                        };
-                        localStorage.setItem(noteNum, JSON.stringify(updatedNote));
+                        
                     }}
                     />
             </div>
           </div>
         </>
     );
-  }
+}
   
 export default NoteEdit;
   
