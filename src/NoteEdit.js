@@ -1,7 +1,7 @@
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect} from "react";
 
 const currentDate = () => {
     const date = new Date();
@@ -47,8 +47,18 @@ function NoteEdit() {
     };
 
     const handleDelete = () => {
-      deleteNote(noteNum - 1);
-      navigate(`/notes/${noteNum-1}`);
+      const answer = window.confirm("Are you sure?");
+        if (answer) {
+          // call a function you get from Layout.js to delete
+          deleteNote(noteNum-1);
+          if (noteNum > 1) {
+            navigate(`/notes/${noteNum - 1}`);
+          } else if (notes.length === 1) {
+            navigate(`/notes`);
+          } else {
+            navigate(`/notes/1`);
+          }
+        }
     };
 
     const localDate = new Date(date.toLocaleString("en-US", {timeZone: "America/Denver"}).slice(0, -3));

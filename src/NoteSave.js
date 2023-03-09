@@ -25,7 +25,6 @@ function NoteSave() {
       // if it does, update title, date, and note to whatever you get from notes[noteNum]
       // if noteNum is 1, you need to check the 0 position. 
       if (notes[noteNum-1]) {
-        console.log(noteNum);
         setTitle(notes[noteNum-1].title);
         setDate(notes[noteNum-1].date);
         setNote(notes[noteNum-1].note);
@@ -37,11 +36,17 @@ function NoteSave() {
     }
 
     const handleDelete = () => {
-        const answer = window.confirm("Are you sure?");
+      const answer = window.confirm("Are you sure?");
         if (answer) {
           // call a function you get from Layout.js to delete
           deleteNote(noteNum-1);
-          navigate(`/notes/${noteNum-1}`);
+          if (noteNum > 1) {
+            navigate(`/notes/${noteNum - 1}`);
+          } else if (notes.length === 1) {
+            navigate(`/notes`);
+          } else {
+            navigate(`/notes/1`);
+          }
         }
     };
 

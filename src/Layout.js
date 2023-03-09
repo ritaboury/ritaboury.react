@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate} from "react-router-dom";
 import { NavLink, Outlet } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
@@ -22,7 +22,7 @@ function Layout() {
     }
   }, []);
 
-  //const navigate = useNavigate()
+  const navigate = useNavigate()
   const addClicked = () => {
     const newNote = {
       id: uuidv4(),
@@ -32,7 +32,7 @@ function Layout() {
     };
     setSideNotes([newNote, ...sideNotes]);
     setShowOutlet(true);
-
+    navigate(`/notes/1/edit`);
   };
 
   const hideSide = () => {
@@ -118,8 +118,8 @@ function Layout() {
               ) : (
                 <ul className="note-tags">
                   {sideNotes.map((element, noteNum) => (
-                    <li key={element.id} className="note-tag">
-                      <NavLink to={`/notes/${noteNum + 1}`} /*activeclassname = "active-note"*/>
+                    <li key={element.id} >
+                      <NavLink to={`/notes/${noteNum + 1}`} >
                         <h3>{element.title}</h3>
                         <small>{formatDate(element.date)}</small>
                         <p dangerouslySetInnerHTML={{ __html: `${element.note.slice(0, MAX_CHARS)}...` }} />

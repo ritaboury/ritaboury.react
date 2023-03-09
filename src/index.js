@@ -6,8 +6,6 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Routes, Route} from "react-router-dom";
 import NoteEdit from "./NoteEdit";
 import NoteSave from "./NoteSave"
-import FirstEdit from "./FirstEdit";
-import FirstNote from "./FirstNote";
 import Layout from "./Layout";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
