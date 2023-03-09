@@ -105,7 +105,7 @@ function Layout() {
 
   const { pathname } = useLocation();
 
-  const shouldDisplayPtag = pathname === "/notes";
+  const shouldDisplayPtag = pathname === "/notes" || pathname === "/";
 
 
   return (
