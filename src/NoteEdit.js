@@ -53,7 +53,7 @@ function NoteEdit() {
           deleteNote(noteNum-1);
           if (noteNum > 1) {
             navigate(`/notes/${noteNum - 1}`);
-          } else if (notes.length === 1) {
+          } else if (notes.length === 1 || notes.length === 0) {
             navigate(`/notes`);
           } else {
             navigate(`/notes/1`);

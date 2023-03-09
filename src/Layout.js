@@ -60,7 +60,9 @@ function Layout() {
       return index !== noteId;
     });
     setSideNotes(filteredNotes);
-    
+    if (filteredNotes.length === 0) {
+      setShowOutlet(false);
+    }
   }
 
   useEffect(() => {
@@ -69,7 +71,7 @@ function Layout() {
       localStorage.setItem(localStorageKey, JSON.stringify(sideNotes));
   }, [sideNotes])
 
-  useEffect(() => {
+   /* useEffect(() => {
     window.addEventListener("beforeunload", clearLocalStorage);
 
     return () => {
@@ -79,7 +81,8 @@ function Layout() {
 
   const clearLocalStorage = () => {
     window.localStorage.clear();
-  };
+  };   */
+  // uncomment above to delete notes when page is refreshed
 
   const options = {
     year: "numeric",
@@ -131,7 +134,7 @@ function Layout() {
             </div>
           </div>
           <div className="main" >
-            {showOutlet ? (
+            {sideNotes.length > 0 ? (
               <Outlet context={[sideNotes, updateNote, deleteNote]} />
             ) : (
               <p id="main-initial">Select a note, or create a new one.</p>
