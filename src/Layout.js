@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate} from "react-router-dom";
+import { useNavigate, useLocation} from "react-router-dom";
 import { NavLink, Outlet } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 const localStorageKey = "notes";
@@ -11,7 +11,7 @@ function Layout() {
   // if anything is there, put it in the sideNotes: setSideNotes(existing)
 
   // any time you update the sideNotes state, update localStorage as well
-  const [showOutlet, setShowOutlet] = useState(false);
+  
   const existing = JSON.parse(localStorage.getItem(localStorageKey));
 
   const [sideNotes, setSideNotes] = useState([]);
@@ -31,7 +31,6 @@ function Layout() {
       note: '',
     };
     setSideNotes([newNote, ...sideNotes]);
-    setShowOutlet(true);
     navigate(`/notes/1/edit`);
   };
 
@@ -60,9 +59,6 @@ function Layout() {
       return index !== noteId;
     });
     setSideNotes(filteredNotes);
-    if (filteredNotes.length === 0) {
-      setShowOutlet(false);
-    }
   }
 
   useEffect(() => {
@@ -81,7 +77,7 @@ function Layout() {
 
   const clearLocalStorage = () => {
     window.localStorage.clear();
-  };   */
+  }; */
   // uncomment above to delete notes when page is refreshed
 
   const options = {
@@ -99,6 +95,17 @@ function Layout() {
     }
     return formatted;
   };
+
+  const removeTags = (htmlString) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, "text/html");
+    const textContent = doc.body.textContent;
+    return textContent;
+  }
+
+  const { pathname } = useLocation();
+
+  const shouldDisplayPtag = pathname === "/notes";
 
 
   return (
@@ -125,7 +132,7 @@ function Layout() {
                       <NavLink to={`/notes/${noteNum + 1}`} >
                         <h3>{element.title}</h3>
                         <small>{formatDate(element.date)}</small>
-                        <p dangerouslySetInnerHTML={{ __html: `${element.note.slice(0, MAX_CHARS)}...` }} />
+                        <p dangerouslySetInnerHTML={{ __html: `${removeTags(element.note).slice(0, MAX_CHARS)}...` }} />
                       </NavLink>
                     </li>
                   ))}
@@ -134,11 +141,11 @@ function Layout() {
             </div>
           </div>
           <div className="main" >
-            {sideNotes.length > 0 ? (
-              <Outlet context={[sideNotes, updateNote, deleteNote]} />
+          {shouldDisplayPtag ? (
+            <p id="main-initial">Select a note, or create a new one.</p>
             ) : (
-              <p id="main-initial">Select a note, or create a new one.</p>
-            )}
+            <Outlet context={[sideNotes, updateNote, deleteNote]} />
+          )}
 
           </div>
         </div>
