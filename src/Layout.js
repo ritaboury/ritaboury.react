@@ -99,8 +99,12 @@ function Layout() {
   const removeTags = (htmlString) => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlString, "text/html");
-    const textContent = doc.body.textContent;
-    return textContent;
+    const body = doc.body;
+    for (const tag of body.querySelectorAll('*')) {
+      const textNode = doc.createTextNode(tag.textContent);
+      tag.parentNode.replaceChild(textNode, tag);
+    }
+    return body.innerHTML;
   }
 
   const { pathname } = useLocation();

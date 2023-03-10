@@ -49,14 +49,7 @@ function NoteSave() {
           }
         }
     };
-
-    const removeTags = (htmlString) => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(htmlString, "text/html");
-        const textContent = doc.body.textContent;
-        return textContent;
-    }
-
+    
     const options = {
       year: "numeric",
       month: "long",
@@ -83,7 +76,7 @@ function NoteSave() {
                 <span className = "sd-buttons"><p id = "save" onClick={()=>editClicked()}>Edit</p> <p id = "delete" onClick={()=>handleDelete()}>Delete</p></span>
             </div>
             <div className = "edit-bar">
-                <p id = "note-content" defaultValue={""} readOnly>{removeTags(note)}</p>
+                <p id = "note-content" defaultValue={""} readOnly dangerouslySetInnerHTML={{ __html: `${note}` }}></p>
             </div>
           </div>
 

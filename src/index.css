@@ -180,7 +180,7 @@ header {
   cursor: pointer;
 }
 
-#save:hover, #delete:hover, li:hover {
+#save:hover, #delete:hover {
   border: 1px solid grey;
   background-color: rgb(78, 65, 78);
   color: white;
